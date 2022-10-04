@@ -4,7 +4,8 @@ import click
 from libra_metrics.apollo_interface.soh_api import get_staion_statistics, \
     request_api
 from libra_metrics.apollo_interface.station_map import open_station_map
-from libra_metrics.nagios.config import load_nagios_config
+from libra_metrics.config import LogLevels
+from libra_metrics.nagios.nagios_config import load_nagios_config
 from libra_metrics.nagios.libra_checks import check_station
 from libra_metrics.nagios.nrdp import NagiosCheckResults, submit
 
@@ -28,11 +29,23 @@ from libra_metrics.nagios.nrdp import NagiosCheckResults, submit
     help='The configuration file containing information for reaching the \
         Nagios server'
 )
+@click.option(
+    '--log-level',
+    type=click.Choice([v.value for v in LogLevels]),
+    help="Log more information about the program's execution",
+    default=LogLevels.WARNING
+)
 def main(
     station_map: str,
     apollo_address: str,
-    nagios_config: str
+    nagios_config: str,
+    log_level: LogLevels
 ):
+    logging.basicConfig(
+        format='%(asctime)s:%(levelname)s:%(message)s',
+        datefmt="%Y-%m-%d %H:%M:%S",
+        level=log_level.value)
+
     # Load station map and nagios config
     nagios = load_nagios_config(nagios_config)
     hubs = open_station_map(station_map)

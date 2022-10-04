@@ -1,3 +1,4 @@
+import logging
 from libra_metrics.apollo_interface.soh_api import StationStats
 from libra_metrics.nagios.models import NagiosRange
 from libra_metrics.nagios.nrdp import NagiosCheckResults, NagiosCheckResult
@@ -67,6 +68,7 @@ def check_bytes(
     -------
     NagiosCheckResult
     '''
+    logging.debug(f"Bytes check for {hostname}")
     # Check if the value is in the critical range
     if NagiosRange(threshold).in_range(total_bytes):
         state = 2
@@ -82,6 +84,8 @@ def check_bytes(
     output += f" | Bytes={total_bytes}c;;{threshold};;"
 
     service = "Bytes Received at Hub"
+
+    logging.debug(output)
 
     return NagiosCheckResult(
         hostname=hostname,
@@ -115,6 +119,8 @@ def check_burst_percentage(
     -------
     NagiosCheckResult
     '''
+    logging.debug(f"Burst check for {hostname}")
+
     # Check if the value is in the critical range
     if NagiosRange(threshold).in_range(burst_percentage):
         state = 2
@@ -130,6 +136,8 @@ def check_burst_percentage(
     output += f" | GoodBursts={burst_percentage}%;;{threshold};;"
 
     service = "Good Burst Percentage"
+
+    logging.debug(output)
 
     return NagiosCheckResult(
         hostname=hostname,
@@ -163,6 +171,7 @@ def check_receive_power(
     -------
     NagiosCheckResult
     '''
+    logging.debug(f"Receive power check for {hostname}")
     # Check if the value is in the critical range
     if NagiosRange(threshold).in_range(receive_power):
         state = 2
@@ -178,6 +187,8 @@ def check_receive_power(
     output += f" | ReceivePower={receive_power}dBm;;{threshold};;"
 
     service = "Receive Power at Hub"
+
+    logging.debug(output)
 
     return NagiosCheckResult(
         hostname=hostname,

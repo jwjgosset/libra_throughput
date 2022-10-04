@@ -38,7 +38,7 @@ def load_nagios_config(
     try:
         config = NagiosConfig(
             address=parser['nagios']['address'],
-            api_key=parser['nagios']['address']
+            api_key=parser['nagios']['api_key']
         )
     except KeyError as e:
         raise KeyError(f"Invalid nagios config file. Key missing: {e}")
