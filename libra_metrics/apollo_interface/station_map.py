@@ -32,13 +32,15 @@ class LibraHub:
         initializer
         '''
         self.carina_id = data['carina_id']
+        self.tdmaslots = {}
         for slot in data['tdma_slots']:
             self.tdmaslots[slot] = TDMASlot(data['tdma_slots'][slot])
             self.hub_id = hub_id
 
 
-class LibraHubs(List):
-    pass
+@dataclass
+class LibraHubs:
+    hubs: List[LibraHub]
 
 
 def open_station_map(
@@ -85,10 +87,10 @@ def parse_map_data(
     Dict: Dictionary containings hub names as keys and LibraHub objects as
     values
     '''
-    hubs = LibraHubs()
+    librahubs = LibraHubs(hubs=[])
     for hub in map_data:
-        hubs.append(LibraHub(
+        librahubs.hubs.append(LibraHub(
             data=map_data[hub],
             hub_id=hub
         ))
-    return hubs
+    return librahubs
