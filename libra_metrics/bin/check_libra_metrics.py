@@ -12,28 +12,24 @@ from libra_metrics.nagios.nrdp import NagiosCheckResults, submit
 
 @click.command()
 @click.option(
-   '-m',
    '--station-map',
    help='The station map json file containing information about which stations \
        come through which TDMA slot at which Libra HUB'
 )
 @click.option(
-    '-a',
-    '-apollo-address',
+    '--apollo-address',
     help='The hostname or IP address of the apollo server to query, including \
         port number'
 )
 @click.option(
-    '-n',
     '--nagios-config',
     help='The configuration file containing information for reaching the \
         Nagios server'
 )
 @click.option(
     '--log-level',
-    type=click.Choice([v.value for v in LogLevels]),
     help="Log more information about the program's execution",
-    default=LogLevels.WARNING
+    default='WARNING'
 )
 def main(
     station_map: str,
@@ -41,10 +37,20 @@ def main(
     nagios_config: str,
     log_level: LogLevels
 ):
+    if log_level == 'INFO':
+        level = LogLevels.INFO
+    elif log_level == 'WARNING':
+        level = LogLevels.WARNING
+    elif log_level == 'ERROR':
+        level = LogLevels.ERROR
+    elif log_level == 'DEBUG':
+        level = LogLevels.DEBUG
+    else:
+        raise ValueError('Invalid --log-level specified')
     logging.basicConfig(
         format='%(asctime)s:%(levelname)s:%(message)s',
         datefmt="%Y-%m-%d %H:%M:%S",
-        level=log_level.value)
+        level=level.value)
 
     # Load station map and nagios config
     nagios = load_nagios_config(nagios_config)
@@ -77,7 +83,7 @@ def main(
         submit(
             nrdp=results,
             nagios=nagios.address,
-            token=nagios.api_key
+            token=nagios.token
         )
     except HTTPError as e:
         logging.error(f"Failed to submit check results: {e}")
