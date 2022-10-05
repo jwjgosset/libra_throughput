@@ -4,3 +4,9 @@
 *.pyc
 
 *.cfg
+
+.venv/*
+venv/*
+
+*.egg-info/
+*.txt

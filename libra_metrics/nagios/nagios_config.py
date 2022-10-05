@@ -10,10 +10,10 @@ class NagiosConfig:
     def __init__(
         self,
         address: str,
-        api_key: str
+        token: str
     ):
         self.address = address
-        self.api_key = api_key
+        self.token = token
 
 
 def load_nagios_config(
@@ -38,7 +38,7 @@ def load_nagios_config(
     try:
         config = NagiosConfig(
             address=parser['nagios']['address'],
-            api_key=parser['nagios']['address']
+            token=parser['nagios']['token']
         )
     except KeyError as e:
         raise KeyError(f"Invalid nagios config file. Key missing: {e}")
